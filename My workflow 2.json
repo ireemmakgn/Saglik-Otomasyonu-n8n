@@ -1,0 +1,241 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1F8dNuzeNYan60Nf8DISp96VORIk-K2zVJ5rulR_oE2M",
+          "mode": "list",
+          "cachedResultName": "hasta giriş formu",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F8dNuzeNYan60Nf8DISp96VORIk-K2zVJ5rulR_oE2M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F8dNuzeNYan60Nf8DISp96VORIk-K2zVJ5rulR_oE2M/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "da2c07eb-b493-4a2d-add6-6794971b3c74",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "dQDNEorUma9LWwyz",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Aşağıdaki hasta verilerini bir doktor asistanı gibi analiz et:\n\nHasta Şikayeti: {{ $json[\"Sikayetler\"] }}\nKan Şekeri Değeri: {{ $json[\"Seker_Degeri\"] }}\nYaş: {{ $json[\"Yas\"] }}\n\nAnaliz Notu: Lütfen bu verilere dayanarak olası riskleri 1-2 cümleyle değerlendir ve sadece bu değerlendirmeyi döndür."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        0
+      ],
+      "id": "e27f9294-07b7-4528-80d1-5ca1c1428313",
+      "name": "Message a model",
+      "retryOnFail": true,
+      "waitBetweenTries": 4000,
+      "maxTries": 5,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y5Spy6BBMlAqcXvR",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1F8dNuzeNYan60Nf8DISp96VORIk-K2zVJ5rulR_oE2M",
+          "mode": "list",
+          "cachedResultName": "hasta giriş formu",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F8dNuzeNYan60Nf8DISp96VORIk-K2zVJ5rulR_oE2M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1F8dNuzeNYan60Nf8DISp96VORIk-K2zVJ5rulR_oE2M/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Hasta_Ad_Soyad": "={{ $('Google Sheets Trigger').item.json.Hasta_Ad_Soyad }}",
+            "Yas": "=",
+            "Seker_Degeri": "=",
+            "Sikayetler": "=",
+            "Gemini_Risk_Analizi": "=\n{{ $json.content.parts[0].text }}",
+            "Kayit_Tarihi": "="
+          },
+          "matchingColumns": [
+            "Hasta_Ad_Soyad"
+          ],
+          "schema": [
+            {
+              "id": "Hasta_Ad_Soyad",
+              "displayName": "Hasta_Ad_Soyad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Yas",
+              "displayName": "Yas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Seker_Degeri",
+              "displayName": "Seker_Degeri",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sikayetler",
+              "displayName": "Sikayetler",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Gemini_Risk_Analizi",
+              "displayName": "Gemini_Risk_Analizi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Kayit_Tarihi",
+              "displayName": "Kayit_Tarihi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        0
+      ],
+      "id": "7e806566-de32-4a8e-88e5-69f9f39e0e3a",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RSoMXcc0m6FEpSX7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "64e0d29e-f044-4bdf-b53e-9af98a993297",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "93306186f92ffafe2c4a9fff0f805162b69999106d4403666aa4cf9067f7d205"
+  },
+  "id": "vxx95xHyc5TcEWG0",
+  "tags": []
+}
